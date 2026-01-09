@@ -1,0 +1,88 @@
+﻿@model GymManagementBusinessLayer.ViewModels.SessionVM.UpdateVM
+
+<div class="container mt-4">
+    <header class="mb-4">
+        <h3 class="text-primary-color">Edit Session</h3>
+        <p class="text-muted">Update session information and capacity</p>
+    </header>
+
+    <form asp-action="UpdateSession" method="post">
+        <input type="hidden" asp-for="Id" />
+        <div class="row justify-content-center">
+            <div class="col-md-10">
+                <div class="card shadow-sm border-0">
+                    <div class="card-body p-4">
+
+                        <div class="section-header mb-3">
+                            <h5 class="text-primary fw-bold">General Information</h5>
+                            <hr class="mt-2">
+                        </div>
+
+                        <div class="row g-3 mb-4">
+                            <div class="col-md-4">
+                                <label asp-for="CategoryId" class="form-label fw-semibold">Category</label>
+                                <select asp-for="CategoryId" asp-items="@ViewBag.Categories" class="form-select">
+                                    <option value="">Select Category</option>
+                                </select>
+                                <span asp-validation-for="CategoryId" class="text-danger"></span>
+                            </div>
+
+                            <div class="col-md-4">
+                                <label asp-for="TrainerId" class="form-label fw-semibold">Trainer</label>
+                                <select asp-for="TrainerId" asp-items="@ViewBag.Trainers" class="form-select">
+                                    <option value="">Select Trainer</option>
+                                </select>
+                                <span asp-validation-for="TrainerId" class="text-danger"></span>
+                            </div>
+
+                            <div class="col-md-4">
+                                <label asp-for="Capacity" class="form-label fw-semibold">Capacity (Max 25)</label>
+                                <input asp-for="Capacity" type="number" class="form-control" min="1" max="25" />
+                                <span asp-validation-for="Capacity" class="text-danger"></span>
+                            </div>
+
+                            <div class="col-12">
+                                <label asp-for="Description" class="form-label fw-semibold">Description <span class="text-danger">*</span></label>
+                                <textarea asp-for="Description" class="form-control" rows="2"></textarea>
+                                <span asp-validation-for="Description" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="section-header mb-3">
+                            <h5 class="text-primary fw-bold">Date & Time</h5>
+                            <hr class="mt-2">
+                        </div>
+
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label asp-for="StartDate" class="form-label fw-semibold">Start Date & Time</label>
+                                <input asp-for="StartDate" type="datetime-local" class="form-control" />
+                                <span asp-validation-for="StartDate" class="text-danger"></span>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label asp-for="EndDate" class="form-label fw-semibold">End Date & Time</label>
+                                <input asp-for="EndDate" type="datetime-local" class="form-control" />
+                                <span asp-validation-for="EndDate" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-between mt-4 pt-3 border-top">
+                            <a asp-action="Index" class="btn btn-outline-secondary rounded-pill px-4">
+                                <i class="bi bi-arrow-left me-1"></i>Back to List
+                            </a>
+                            <button type="submit" class="btn btn-primary rounded-pill px-4">
+                                <i class="bi bi-save me-1"></i>Save Changes
+                            </button>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
