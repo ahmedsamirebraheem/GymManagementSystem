@@ -1,5 +1,4 @@
 ﻿using GymManagementBusinessLayer.ViewModels.MemberVM;
-using GymManagementBusinessLayer.ViewModels.PlanVM;
 using GymManagementBusinessLayer.ViewModels.SessionVM;
 using GymManagementBusinessLayer.ViewModels.TrainerVM;
 using GymManagementDataAccessLayer.Entities;
@@ -86,6 +85,7 @@ public class MappingConfiguration
             .Map(dest => dest.DateOfBirth, src => src.DateOfBirth.ToString("yyyy-MM-dd"))
             .Map(dest => dest.Address, src => $"{src.Address.BuildingNumber} {src.Address.Street}, {src.Address.City}");
 
-        
+
+       
     }
 }

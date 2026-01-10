@@ -26,6 +26,7 @@ builder.Services.AddScoped<ISessionService, SessionService>();
 builder.Services.AddScoped<IMembershipService, MembershipService>();
 
 
+
 builder.Services.AddMapster();
 
 GymManagementBusinessLayer.Configurations.MappingConfiguration.RegisterMappings();
