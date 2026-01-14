@@ -122,4 +122,10 @@ public class GenericRepository<T> : IGenericRepository<T> where T : class
         }
         return await _dbContext.Set<T>().CountAsync();
     }
+
+    // داخل الـ GenericRepository.cs
+    public async Task<T> GetWithDeletedAsync(Expression<Func<T, bool>> filter)
+    {
+        return await _dbSet.IgnoreQueryFilters().FirstOrDefaultAsync(filter);
+    }
 }

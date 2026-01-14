@@ -10,7 +10,8 @@ public class TrainerService(IUnitOfWork unitOfWork, IMapper mapper) : ITrainerSe
 {
     public async Task<IEnumerable<TrainerVM>> GetAllAsync()
     {
-        var trainers = await unitOfWork.Trainers.GetAllAsync(null,t=>t.Address);
+        var trainers = await unitOfWork.Trainers.GetAllAsync(null, t => t.Address);
+
         return mapper.Map<IEnumerable<TrainerVM>>(trainers);
     }
     public async Task<bool> CreateAsync(CreateVM createVM)

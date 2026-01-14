@@ -1,0 +1,81 @@
+﻿@using GymManagementBusinessLayer.ViewModels.MemberSessionVM
+@model CreateMemberSessionVM
+
+@{
+    ViewData["Title"] = "New Booking";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="card shadow-lg border-0">
+                @* الهيدر *@
+                <div class="card-header bg-primary text-white p-4">
+                    <h3 class="mb-1"><i class="bi bi-person-plus-fill me-2"></i>New Booking</h3>
+                    <p class="mb-0 opacity-75">Assign a member to: <strong>@Model.CategoryName</strong></p>
+                </div>
+
+                <div class="card-body p-4">
+                    <form asp-action="CreateBooking" method="post">
+                        @* الحقول المخفية *@
+                        <input type="hidden" asp-for="SessionId" />
+                        <input type="hidden" asp-for="CategoryName" />
+
+                        @* رسائل الخطأ العامة *@
+                        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                        @* اختيار العضو *@
+                        <div class="mb-4">
+                            <label asp-for="SelectedMemberId" class="form-label fw-bold">Member Name</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light"><i class="bi bi-search"></i></span>
+                                <select asp-for="SelectedMemberId"
+                                        asp-items="Model.MembersList"
+                                        class="form-select select2-enable"
+                                        id="MemberSelect">
+                                    <option value="">-- Start typing member name --</option>
+                                </select>
+                            </div>
+                            <span asp-validation-for="SelectedMemberId" class="text-danger small"></span>
+                        </div>
+
+                        @* الأزرار *@
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary btn-lg shadow-sm">
+                                <i class="bi bi-check-circle me-1"></i> Confirm Booking
+                            </button>
+                            <a asp-action="GetMembersForUpcomingSession" asp-route-sessionId="@Model.SessionId"
+                               class="btn btn-outline-secondary btn-lg">
+                                <i class="bi bi-x-circle me-1"></i> Cancel
+                            </a>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="card-footer bg-light text-center py-3">
+                    <small class="text-muted">Only registered members can be booked for this session.</small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @* تفعيل مكتبة Select2 لتسهيل البحث *@
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+    @* تفعيل الـ Validation من جهة العميل *@
+    <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        $(document).ready(function() {
+            $('#MemberSelect').select2({
+                placeholder: "Search for a member...",
+                allowClear: true,
+                width: '100%',
+                theme: 'classic'
+            });
+        });
+    </script>
+}

@@ -7,11 +7,7 @@ using System.Text;
 
 namespace GymManagementDataAccessLayer.Repositories.Classes;
 
-public class CategoryRepository : GenericRepository<Category>, ICategoryRepository
+public class CategoryRepository(GymDBContext dbContext) : GenericRepository<Category>(dbContext), ICategoryRepository
 {
-    private readonly GymDBContext _dbContext;
-    public CategoryRepository(GymDBContext dbContext) : base(dbContext)
-    {
-        _dbContext = dbContext;
-    }
+    private readonly GymDBContext _dbContext = dbContext;
 }

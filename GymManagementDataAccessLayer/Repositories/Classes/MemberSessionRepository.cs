@@ -7,11 +7,9 @@ using System.Text;
 
 namespace GymManagementDataAccessLayer.Repositories.Classes;
 
-public class MemberSessionRepository : GenericRepository<MemberSession>, IMemberSessionRepository
+public class MemberSessionRepository(GymDBContext dbContext): GenericRepository<MemberSession>(dbContext), IMemberSessionRepository
 {
-    private readonly GymDBContext _dbContext;
-    public MemberSessionRepository(GymDBContext dbContext) : base(dbContext)
-    {
-        _dbContext = dbContext;
-    }
+
+    private readonly GymDBContext _dbContext = dbContext;
+
 }

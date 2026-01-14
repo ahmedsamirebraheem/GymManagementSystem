@@ -12,4 +12,5 @@ public class MemberSession : BaseEntity
     public Member Member { get; set; } = null!;
     public int SessionId { get; set; }
     public Session Session { get; set; } = null!;
+    public DateTime BookingDate { get; set; } = DateTime.Now;
 }

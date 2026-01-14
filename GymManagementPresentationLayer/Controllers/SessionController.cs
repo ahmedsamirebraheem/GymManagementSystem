@@ -151,5 +151,21 @@ public class SessionController(ISessionService sessionService) : Controller
         var trainers = await sessionService.GetTrainersForDropdown();
         ViewBag.Trainers = new SelectList(trainers, "Id", "Name");
     }
+    public async Task<JsonResult> GetTrainersByCategory(int categoryId)
+    {
+        // جلب كل المدربين (المابنج الجديد سيملأ الـ SpecializationId تلقائياً)
+        var trainers = await sessionService.GetTrainersForDropdown();
+
+        // فلترة المدربين بناءً على القسم المختار
+        var filtered = trainers
+            .Where(t => t.SpecializationId == categoryId)
+            .Select(t => new {
+                id = t.Id,
+                name = t.Name
+            })
+            .ToList();
+
+        return Json(filtered);
+    }
 
 }

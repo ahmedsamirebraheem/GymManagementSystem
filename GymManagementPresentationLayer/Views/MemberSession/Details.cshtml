@@ -1,0 +1,243 @@
+﻿@using GymManagementBusinessLayer.ViewModels.MemberSessionVM
+@model SessionMembersVM
+
+@{
+    ViewData["Title"] = "Session Members";
+    bool isUpcoming = DateTime.Now < Model.StartDate;
+    string headerClass = isUpcoming ? "bg-primary" : "bg-success";
+    string accentColor = isUpcoming ? "#0d6efd" : "#198754";
+}
+
+@* مكتبة SweetAlert2 للـ Toasts *@
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<div id="alert-container" style="position: fixed; top: 20px; right: 20px; z-index: 1050;"></div>
+
+@* --- Header Section --- *@
+<header class="@headerClass text-white rounded-3 p-4 shadow-sm mt-5 mb-4">
+    <div class="d-flex justify-content-between align-items-center">
+        <div class="d-flex align-items-center">
+            <a asp-action="Index" class="btn btn-light me-3 rounded-circle d-flex align-items-center justify-content-center shadow-sm"
+               style="width: 40px; height: 40px; color: @accentColor !important;" title="Back">
+                <i class="bi bi-arrow-left fs-4"></i>
+            </a>
+            <div>
+                <h2 class="mb-1 fw-semibold">
+                    <i class="bi @(isUpcoming ? "bi-calendar-event" : "bi-play-circle") me-2"></i>
+                    @Model.CategoryName Members
+                </h2>
+                <p class="mb-0 text-light opacity-75">
+                    <i class="bi bi-clock me-1"></i> Start: @Model.StartDate.ToString("hh:mm tt")
+                    <span class="ms-2 badge bg-light text-dark shadow-sm">
+                        @(isUpcoming ? "Upcoming" : "Ongoing Now")
+                    </span>
+                </p>
+            </div>
+        </div>
+
+        <button type="button" class="btn btn-light fw-bold shadow-sm px-4"
+                style="color: @accentColor;"
+                data-bs-toggle="modal" data-bs-target="#addMemberModal">
+            <i class="bi bi-plus-circle-fill me-1"></i> Quick Add
+        </button>
+    </div>
+</header>
+
+@* --- Members Table Card --- *@
+<div class="card shadow-sm border-0">
+    <div class="card-body p-0">
+        @if (Model.Members != null && Model.Members.Any())
+        {
+            <div class="table-responsive">
+                <table class="table table-hover align-middle text-center mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th class="ps-4 text-start">Member</th>
+                            <th>Booking Date</th>
+                            @if (!isUpcoming)
+                            {
+                                <th>Attendance Status</th>
+                                <th>Mark Attendance</th>
+                            }
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var member in Model.Members)
+                        {
+                            <tr id="row-@member.MemberId">
+                                <td class="ps-4 text-start fw-medium">@member.MemberName</td>
+                                <td class="text-muted small">@member.BookingDate.ToString("MM/dd/yyyy")</td>
+                                @if (!isUpcoming)
+                                {
+                                    <td>
+                                        <span class="status-label badge rounded-pill @(member.IsAttended ? "bg-success" : "bg-secondary") shadow-sm">
+                                            @(member.IsAttended ? "Attended" : "Absent")
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <div class="form-check form-switch d-inline-block">
+                                            <input class="form-check-input attendance-toggle shadow-none" type="checkbox"
+                                                   style="cursor: pointer;"
+                                                   data-session-id="@Model.SessionId"
+                                                   data-member-id="@member.MemberId" @(member.IsAttended ? "checked" : "")>
+                                        </div>
+                                    </td>
+                                }
+                                <td>
+                                    @* فورم الحذف مع تأكيد SweetAlert *@
+                                    <form asp-action="CancelBooking" method="post" class="d-inline delete-form">
+                                        <input type="hidden" name="sessionId" value="@Model.SessionId" />
+                                        <input type="hidden" name="memberId" value="@member.MemberId" />
+                                        <button type="button" class="btn btn-sm btn-outline-danger border-0 rounded-circle btn-delete" title="Remove Member">
+                                            <i class="bi bi-trash fs-5"></i>
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+        else
+        {
+            <div class="text-center py-5">
+                <i class="bi bi-people display-1 text-muted opacity-25"></i>
+                <h4 class="mt-3 text-muted">No members enrolled yet</h4>
+            </div>
+        }
+    </div>
+</div>
+
+@* --- Modal --- *@
+<div class="modal fade" id="addMemberModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg">
+            <div class="modal-header @headerClass text-white border-0">
+                <h5 class="modal-title fw-bold">
+                    <i class="bi bi-person-plus-fill me-2"></i> Enroll Member
+                </h5>
+                <button type="button" class="btn-close btn-close-white shadow-none" data-bs-dismiss="modal"></button>
+            </div>
+            <form id="quickAddForm">
+                <div class="modal-body p-4">
+                    <input type="hidden" name="SessionId" value="@Model.SessionId" />
+                    <div class="mb-3">
+                        <label class="form-label fw-bold text-secondary">Select Member</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light border-end-0"><i class="bi bi-search text-muted"></i></span>
+                            <select name="SelectedMemberId" id="memberSelect" class="form-select border-start-0" required>
+                                <option value="">Loading members...</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer bg-light border-0">
+                    <button type="button" class="btn btn-secondary px-4" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn @headerClass text-white px-4 fw-bold shadow-sm">
+                        <i class="bi bi-plus-lg me-1"></i> Add to Session
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            // 1. عرض الـ Toast عند المسح (لو راجع من RedirectToAction بـ TempData)
+            @if (TempData["SuccessMessage"] != null)
+            {
+                    <text>
+                    Swal.fire({
+                        toast: true,
+                        position: 'top-end',
+                        icon: 'success',
+                        title: '@TempData["SuccessMessage"]',
+                        showConfirmButton: false,
+                        timer: 3000,
+                        timerProgressBar: true
+                    });
+                    </text>
+            }
+
+            // 2. تحميل الأعضاء
+            $('#addMemberModal').on('show.bs.modal', function () {
+                $.get('@Url.Action("GetAvailableMembers", "MemberSession")', { sessionId: @Model.SessionId }, function (data) {
+                    let opt = '<option value="">-- Choose Member --</option>';
+                    $.each(data, function (i, m) {
+                        opt += `<option value="${m.id || m.Id}">${m.name || m.Name}</option>`;
+                    });
+                    $('#memberSelect').html(opt);
+                });
+            });
+
+            // 3. إضافة عضو AJAX مع Toast
+            $('#quickAddForm').submit(function (e) {
+                e.preventDefault();
+                const formData = $(this).serialize();
+
+                $.ajax({
+                    url: '@Url.Action("Create", "MemberSession")',
+                    type: 'POST',
+                    data: formData,
+                    success: function (res) {
+                        if (res.success) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Added!',
+                                text: 'Member added successfully.',
+                                timer: 1500,
+                                showConfirmButton: false
+                            }).then(() => {
+                                location.reload();
+                            });
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error',
+                                text: res.message || "Member already registered!"
+                            });
+                        }
+                    }
+                });
+            });
+
+            // 4. تأكيد الحذف بـ SweetAlert
+            $('.btn-delete').on('click', function () {
+                const form = $(this).closest('.delete-form');
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "This booking will be cancelled!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#3085d6',
+                    confirmButtonText: 'Yes, cancel it!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        form.submit();
+                    }
+                });
+            });
+
+            // 5. تحديث الحضور
+            $(document).on('change', '.attendance-toggle', function () {
+                const chk = $(this);
+                const badge = chk.closest('tr').find('.status-label');
+                $.post('@Url.Action("UpdateAttendance", "MemberSession")', {
+                    sessionId: chk.data('session-id'),
+                    memberId: chk.data('member-id')
+                }, function (res) {
+                    if (res.success) {
+                        badge.text(res.isAttended ? "Attended" : "Absent")
+                             .toggleClass("bg-success", res.isAttended)
+                             .toggleClass("bg-secondary", !res.isAttended);
+                    }
+                });
+            });
+        });
+    </script>
+}

@@ -26,6 +26,8 @@ public interface IGenericRepository<T> where T : class
              string? includeProperties = null);
 
     Task<int> CountAsync(Expression<Func<T, bool>>? filter = null);
+
+    Task<T?> GetWithDeletedAsync(Expression<Func<T, bool>> filter);
     Task AddAsync(T entity);
         void Update(T entity);
         void Delete(T entity);

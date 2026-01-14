@@ -1,4 +1,5 @@
-﻿using GymManagementBusinessLayer.ViewModels.MemberVM;
+﻿using GymManagementBusinessLayer.ViewModels.MemberSessionVM;
+using GymManagementBusinessLayer.ViewModels.MemberVM;
 using GymManagementBusinessLayer.ViewModels.SessionVM;
 using GymManagementBusinessLayer.ViewModels.TrainerVM;
 using GymManagementDataAccessLayer.Entities;
@@ -78,6 +79,7 @@ public class MappingConfiguration
 
         TypeAdapterConfig<Trainer, TrainerVM>.NewConfig()
             .Map(dest => dest.Specialization, src => src.Specialty.ToString())
+            .Map(dest => dest.SpecializationId, src => (int)src.Specialty)
             .Map(dest => dest.Gender, src => src.Gender.ToString());
 
         TypeAdapterConfig<Trainer, GymManagementBusinessLayer.ViewModels.TrainerVM.DetailsVM>.NewConfig()
@@ -85,7 +87,28 @@ public class MappingConfiguration
             .Map(dest => dest.DateOfBirth, src => src.DateOfBirth.ToString("yyyy-MM-dd"))
             .Map(dest => dest.Address, src => $"{src.Address.BuildingNumber} {src.Address.Street}, {src.Address.City}");
 
+        TypeAdapterConfig<Session, MemberSessionVM>.NewConfig()
+     .Map(dest => dest.SessionId, src => src.Id)
+     .Map(dest => dest.CategoryName, src => src.Category != null ? src.Category.Name : "No Category")
+     .Map(dest => dest.TrainerName, src => src.Trainer != null ? src.Trainer.Name : "Trainer Not Assigned")
+     .Map(dest => dest.MaxCapacity, src => src.Capacity)
+     .Map(dest => dest.EnrolledCount, src => src.SessionMembers != null ? src.SessionMembers.Count : 0)
+     .Map(dest => dest.StartDate, src => src.StartDate)
+     .Map(dest => dest.EndDate, src => src.EndDate);
 
-       
+        TypeAdapterConfig<Session, SessionMembersVM>.NewConfig()
+    .Map(dest => dest.SessionId, src => src.Id)
+    .Map(dest => dest.CategoryName, src => src.Category.Name)
+    .Map(dest => dest.Members, src => src.SessionMembers); // Mapster هيتعامل مع القائمة تلقائياً لو الأسماء متوافقة
+
+        TypeAdapterConfig<MemberSession, MemberBookingVM>.NewConfig()
+            .Map(dest => dest.MemberId, src => src.MemberId)
+            .Map(dest => dest.MemberName, src => src.Member.Name)
+            .Map(dest => dest.BookingDate, src => src.BookingDate)
+        .Map(dest => dest.IsAttended, src => src.IsAttended);
+
+        TypeAdapterConfig<Trainer, TrainerSelectVM>.NewConfig()
+    .Map(dest => dest.SpecializationId, src => (int)src.Specialty);
+
     }
 }

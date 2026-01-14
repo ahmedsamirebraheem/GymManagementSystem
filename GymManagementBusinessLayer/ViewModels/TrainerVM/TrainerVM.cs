@@ -10,6 +10,7 @@ public class TrainerVM
     public string Name { get; set; } = null!;
     public string Email { get; set; } = null!;
     public string Specialization { get; set; } = null!;
+    public int SpecializationId { get; set; }
     public string Gender { get; set; } = null!;
     public string PhoneNumber { get; set; } = null!;
 }
