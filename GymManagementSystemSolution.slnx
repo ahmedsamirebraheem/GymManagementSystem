@@ -1,5 +1,9 @@
 <Solution>
-  <Project Path="GymManagementBusinessLayer/GymManagementBusinessLayer.csproj" />
-  <Project Path="GymManagementDataAccessLayer/GymManagementDataAccessLayer.csproj" />
-  <Project Path="GymManagementPresentationLayer/GymManagementPresentationLayer.csproj" />
+  <Folder Name="/Solution Items/">
+    <File Path=".editorconfig" />
+    <File Path=".gitignore" />
+  </Folder>
+  <Project Path="../../../../../../source/repos/GymManagementSystemSolution/GymManagementBusinessLayer/GymManagementBusinessLayer.csproj" />
+  <Project Path="../../../../../../source/repos/GymManagementSystemSolution/GymManagementDataAccessLayer/GymManagementDataAccessLayer.csproj" />
+  <Project Path="../../../../../../source/repos/GymManagementSystemSolution/GymManagementPresentationLayer/GymManagementPresentationLayer.csproj" />
 </Solution>
