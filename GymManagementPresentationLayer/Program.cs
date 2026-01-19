@@ -1,5 +1,7 @@
 using GymManagementBusinessLayer.Services.Classes;
+using GymManagementBusinessLayer.Services.Classes.AttachmentService;
 using GymManagementBusinessLayer.Services.Interfaces;
+using GymManagementBusinessLayer.Services.Interfaces.AttachmentService;
 using GymManagementBusinessLayer.ViewModels.AnalyticsVM;
 using GymManagementDataAccessLayer.Data.Context;
 using GymManagementDataAccessLayer.Data.DataSeeding;
@@ -25,6 +27,7 @@ builder.Services.AddScoped<IPlanService, PlanService>();
 builder.Services.AddScoped<ISessionService, SessionService>();
 builder.Services.AddScoped<IMembershipService, MembershipService>();
 builder.Services.AddScoped<IMemberSessionService, MemberSessionService>();
+builder.Services.AddScoped<IAttachmentService , AttachmentService>();
 
 
 

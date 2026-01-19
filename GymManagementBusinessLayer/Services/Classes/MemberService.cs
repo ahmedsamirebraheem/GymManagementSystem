@@ -3,28 +3,61 @@ using GymManagementDataAccessLayer.Repositories.Interfaces;
 using MapsterMapper;
 using GymManagementBusinessLayer.Services.Interfaces;
 using GymManagementBusinessLayer.ViewModels.MemberVM;
+using GymManagementBusinessLayer.Services.Interfaces.AttachmentService;
 namespace GymManagementBusinessLayer.Services.Classes;
 
-public class MemberService(IUnitOfWork unitOfWork, IMapper mapper) : IMemberService
+public class MemberService(IUnitOfWork unitOfWork, IMapper mapper, IAttachmentService attachmentService) : IMemberService
 {
     public async Task<bool> CreateAsync(CreateVM createVM)
     {
         try
         {
             var emailOrPhoneExist = await unitOfWork.Members.GetAsync(m => m.Email == createVM.Email || m.PhoneNumber == createVM.PhoneNumber);
-
             if (emailOrPhoneExist != null) return false;
 
             var member = mapper.Map<Member>(createVM);
+
+            // رفع الصورة وحفظ المسار في الـ Entity
+            if (createVM.PhotoFile != null)
+            {
+                member.Photo = await attachmentService.UploadAsync("members", createVM.PhotoFile);
+            }
+
             await unitOfWork.Members.AddAsync(member);
             await unitOfWork.SaveChangesAsync();
             return true;
         }
-        catch (Exception)
-        {
-            return false;
-        }
+        catch (Exception) { return false; }
+    }
 
+    public async Task<bool> UpdateAsync(int id, UpdateVM updateVM)
+    {
+        try
+        {
+            var member = await unitOfWork.Members.GetAsync(m => m.Id == id);
+            if (member == null) return false;
+
+            // لو رفع صورة جديدة
+            if (updateVM.PhotoFile != null)
+            {
+                // 1. حذف القديمة
+                if (!string.IsNullOrEmpty(member.Photo))
+                {
+                    var oldFileName = Path.GetFileName(member.Photo);
+                    await attachmentService.DeleteAsync("members", oldFileName);
+                }
+                // 2. رفع الجديدة
+                member.Photo = await attachmentService.UploadAsync("members", updateVM.PhotoFile);
+            }
+
+            // عمل الـ Map لباقي البيانات
+            mapper.Map(updateVM, member);
+
+            unitOfWork.Members.Update(member);
+            await unitOfWork.SaveChangesAsync();
+            return true;
+        }
+        catch (Exception) { return false; }
     }
     public async Task<IEnumerable<MemberVM>> GetAllAsync()
     {
@@ -85,28 +118,7 @@ public class MemberService(IUnitOfWork unitOfWork, IMapper mapper) : IMemberServ
         var updateVM = mapper.Map<UpdateVM>(member);
         return updateVM;
     }
-    public async Task<bool> UpdateAsync(int id, UpdateVM updateVM)
-    {
-        try
-        {
-            var emailOrPhoneExistForAnotherMember = await unitOfWork.Members.GetAsync(m =>
-                m.Id != id && (m.Email == updateVM.Email || m.PhoneNumber == updateVM.PhoneNumber));
-
-            if (emailOrPhoneExistForAnotherMember != null) return false;
-
-            var member = await unitOfWork.Members.GetAsync(m => m.Id == id);
-            if (member == null) return false;
-            mapper.Map(updateVM, member);
-
-            unitOfWork.Members.Update(member);
-            await unitOfWork.SaveChangesAsync();
-            return true;
-        }
-        catch (Exception)
-        {
-            return false;
-        }
-    }
+    
     public async Task<bool> DeleteAsync(int id)
     {
         try
@@ -130,8 +142,13 @@ public class MemberService(IUnitOfWork unitOfWork, IMapper mapper) : IMemberServ
             if (member == null) return false;
 
             unitOfWork.Members.Delete(member);
-            await unitOfWork.SaveChangesAsync();
-            return true;
+           var isDeleted =  await unitOfWork.SaveChangesAsync();
+            if(isDeleted != 0 )
+            {
+                await attachmentService.DeleteAsync(member.Photo, "members");
+                return true;
+            }
+            return false;
         }
         catch (Exception)
         {

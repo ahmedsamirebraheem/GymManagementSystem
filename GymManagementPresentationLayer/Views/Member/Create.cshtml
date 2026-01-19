@@ -25,71 +25,73 @@
         </div>
         <div class="card-body p-4">
             <div class="row g-4">
+
                 <div class="col-12 border-bottom pb-4 mb-2">
-                    <label asp-for="@Model.Photo" class="form-label fw-bold">Profile Photo</label>
+                    <label asp-for="PhotoFile" class="form-label fw-bold">Profile Photo</label>
                     <div class="d-flex align-items-start gap-4">
                         <div class="flex-shrink-0">
                             <img id="photoPreview"
-                                 src="@Url.Content("~/images/User.jpg")"
+                                 src="/images/User.jpg"
                                  alt="Preview"
                                  style="width: 120px; height: 120px; object-fit: cover;"
                                  class="rounded-circle img-thumbnail shadow-sm" />
                         </div>
                         <div class="flex-grow-1">
-                            <input asp-for="@Model.Photo" type="file" class="form-control mb-2" accept="image/*" id="photoInput" />
-                            <small class="form-text text-muted d-block">Max size: 5 MB. Allowed: JPG, PNG, GIF</small>
+                            <input asp-for="PhotoFile" type="file" class="form-control mb-2" accept="image/*" id="photoInput" />
+                            <span asp-validation-for="PhotoFile" class="text-danger small"></span>
+                            <small class="form-text text-muted d-block">Max size: 5 MB. Allowed: JPG, PNG, JPEG</small>
                         </div>
                     </div>
                 </div>
 
                 <div class="col-md-6">
-                    <label asp-for="@Model.Name" class="form-label fw-bold">Full Name</label>
-                    <input asp-for="@Model.Name" class="form-control" placeholder="Enter full name" />
-                    <span asp-validation-for="@Model.Name" class="text-danger small"></span>
+                    <label asp-for="Name" class="form-label fw-bold">Full Name</label>
+                    <input asp-for="Name" class="form-control" placeholder="Enter full name" />
+                    <span asp-validation-for="Name" class="text-danger small"></span>
                 </div>
 
                 <div class="col-md-6">
-                    <label asp-for="@Model.Email" class="form-label fw-bold">Email Address</label>
-                    <input asp-for="@Model.Email" class="form-control" placeholder="example@domain.com" />
-                    <span asp-validation-for="@Model.Email" class="text-danger small"></span>
+                    <label asp-for="Email" class="form-label fw-bold">Email Address</label>
+                    <input asp-for="Email" class="form-control" placeholder="example@domain.com" />
+                    <span asp-validation-for="Email" class="text-danger small"></span>
                 </div>
 
                 <div class="col-md-4">
-                    <label asp-for="@Model.PhoneNumber" class="form-label fw-bold">Phone Number</label>
-                    <input asp-for="@Model.PhoneNumber" class="form-control" placeholder="01xxxxxxxxx" />
-                    <span asp-validation-for="@Model.PhoneNumber" class="text-danger small"></span>
+                    <label asp-for="PhoneNumber" class="form-label fw-bold">Phone Number</label>
+                    <input asp-for="PhoneNumber" class="form-control" placeholder="01xxxxxxxxx" />
+                    <span asp-validation-for="PhoneNumber" class="text-danger small"></span>
                 </div>
 
                 <div class="col-md-4">
-                    <label asp-for="@Model.DateOfBirth" class="form-label fw-bold">Date of Birth</label>
-                    <input asp-for="@Model.DateOfBirth" class="form-control" type="date" />
-                    <span asp-validation-for="@Model.DateOfBirth" class="text-danger small"></span>
+                    <label asp-for="DateOfBirth" class="form-label fw-bold">Date of Birth</label>
+                    <input asp-for="DateOfBirth" class="form-control" type="date" />
+                    <span asp-validation-for="DateOfBirth" class="text-danger small"></span>
                 </div>
 
                 <div class="col-md-4">
-                    <label asp-for="@Model.Gender" class="form-label fw-bold">Gender</label>
-                    <select asp-for="@Model.Gender" asp-items="Html.GetEnumSelectList<Gender>()" class="form-select">
+                    <label asp-for="Gender" class="form-label fw-bold">Gender</label>
+                    <select asp-for="Gender" asp-items="Html.GetEnumSelectList<Gender>()" class="form-select">
                         <option value="">-- Select Gender --</option>
                     </select>
-                    <span asp-validation-for="@Model.Gender" class="text-danger small"></span>
+                    <span asp-validation-for="Gender" class="text-danger small"></span>
                 </div>
 
                 <div class="col-md-3">
-                    <label asp-for="@Model.BuildingNumber" class="form-label fw-bold">Building No.</label>
-                    <input asp-for="@Model.BuildingNumber" class="form-control" />
-                    <span asp-validation-for="@Model.BuildingNumber" class="text-danger small"></span>
+                    <label asp-for="BuildingNumber" class="form-label fw-bold">Building No.</label>
+                    <input asp-for="BuildingNumber" class="form-control" />
+                    <span asp-validation-for="BuildingNumber" class="text-danger small"></span>
                 </div>
 
                 <div class="col-md-5">
-                    <label asp-for="@Model.Street" class="form-label fw-bold">Street</label>
-                    <input asp-for="@Model.Street" class="form-control" />
-                    <span asp-validation-for="@Model.Street" class="text-danger small"></span>
+                    <label asp-for="Street" class="form-label fw-bold">Street</label>
+                    <input asp-for="Street" class="form-control" />
+                    <span asp-validation-for="Street" class="text-danger small"></span>
                 </div>
 
                 <div class="col-md-4">
-                    <label asp-for="@Model.City" class="form-label fw-bold">City</label>
-                    <input asp-for="@Model.City" class="form-control" />
-                    <span asp-validation-for="@Model.City" class="text-danger small"></span>
+                    <label asp-for="City" class="form-label fw-bold">City</label>
+                    <input asp-for="City" class="form-control" />
+                    <span asp-validation-for="City" class="text-danger small"></span>
                 </div>
             </div>
         </div>
@@ -102,26 +104,26 @@
         <div class="card-body p-4">
             <div class="row g-4">
                 <div class="col-md-4">
-                    <label asp-for="@Model.HealthRecord.Height" class="form-label fw-bold">Height (cm)</label>
+                    <label asp-for="HealthRecord.Height" class="form-label fw-bold">Height (cm)</label>
                     <div class="input-group">
-                        <input asp-for="@Model.HealthRecord.Height" class="form-control" />
+                        <input asp-for="HealthRecord.Height" class="form-control" />
                         <span class="input-group-text">cm</span>
                     </div>
-                    <span asp-validation-for="@Model.HealthRecord.Height" class="text-danger small"></span>
+                    <span asp-validation-for="HealthRecord.Height" class="text-danger small"></span>
                 </div>
 
                 <div class="col-md-4">
-                    <label asp-for="@Model.HealthRecord.Weight" class="form-label fw-bold">Weight (kg)</label>
+                    <label asp-for="HealthRecord.Weight" class="form-label fw-bold">Weight (kg)</label>
                     <div class="input-group">
-                        <input asp-for="@Model.HealthRecord.Weight" class="form-control" />
+                        <input asp-for="HealthRecord.Weight" class="form-control" />
                         <span class="input-group-text">kg</span>
                     </div>
-                    <span asp-validation-for="@Model.HealthRecord.Weight" class="text-danger small"></span>
+                    <span asp-validation-for="HealthRecord.Weight" class="text-danger small"></span>
                 </div>
 
                 <div class="col-md-4">
-                    <label asp-for="@Model.HealthRecord.BloodType" class="form-label fw-bold">Blood Type</label>
-                    <select asp-for="@Model.HealthRecord.BloodType" class="form-select">
+                    <label asp-for="HealthRecord.BloodType" class="form-label fw-bold">Blood Type</label>
+                    <select asp-for="HealthRecord.BloodType" class="form-select">
                         <option value="">Select Type</option>
                         <option>A+</option>
                         <option>A-</option>
@@ -132,13 +134,13 @@
                         <option>AB+</option>
                         <option>AB-</option>
                     </select>
-                    <span asp-validation-for="@Model.HealthRecord.BloodType" class="text-danger small"></span>
+                    <span asp-validation-for="HealthRecord.BloodType" class="text-danger small"></span>
                 </div>
 
                 <div class="col-12">
-                    <label asp-for="@Model.HealthRecord.Note" class="form-label fw-bold">Medical Notes</label>
-                    <textarea asp-for="@Model.HealthRecord.Note" class="form-control" rows="3" placeholder="Any allergies, injuries, or chronic conditions..."></textarea>
-                    <span asp-validation-for="@Model.HealthRecord.Note" class="text-danger small"></span>
+                    <label asp-for="HealthRecord.Note" class="form-label fw-bold">Medical Notes</label>
+                    <textarea asp-for="HealthRecord.Note" class="form-control" rows="3" placeholder="Any allergies, injuries, or chronic conditions..."></textarea>
+                    <span asp-validation-for="HealthRecord.Note" class="text-danger small"></span>
                 </div>
             </div>
         </div>
@@ -160,17 +162,17 @@
     <script>
         const photoInput = document.getElementById('photoInput');
         const photoPreview = document.getElementById('photoPreview');
-
-        // نستخدم المار المباشر من الجذور
         const defaultSrc = "/images/User.jpg";
 
         photoInput.onchange = function (evt) {
             const [file] = this.files;
             if (file) {
-                // إنشاء رابط مؤقت للصورة المختارة وعرضه
+                // Revoke old URL to avoid memory leaks
+                if (photoPreview.src.startsWith('blob:')) {
+                    URL.revokeObjectURL(photoPreview.src);
+                }
                 photoPreview.src = URL.createObjectURL(file);
             } else {
-                // العودة للصورة الافتراضية
                 photoPreview.src = defaultSrc;
             }
         };

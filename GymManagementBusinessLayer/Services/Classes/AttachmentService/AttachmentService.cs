@@ -2,65 +2,75 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using System;
-using System.Collections.Generic;
-using System.Text;
+using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
 
+// أضفنا الـ Namespace هنا لحل رسالة CA1050
 namespace GymManagementBusinessLayer.Services.Classes.AttachmentService;
 
-public class AttachmentService : IAttachmentService
+public class AttachmentService(IWebHostEnvironment webHost) : IAttachmentService
 {
     private readonly string[] _allowedExtensions = [".jpg", ".jpeg", ".png"];
     private readonly long _maxFileSizeInBytes = 5 * 1024 * 1024; // 5 MB
-    private readonly IWebHostEnvironment _webHost;
+    private readonly IWebHostEnvironment _webHost = webHost;
 
-    public  AttachmentService(IWebHostEnvironment webHost)
-    {
-        _webHost = webHost;
-    }
     public async Task<string?> UploadAsync(string folderName, IFormFile file)
     {
         try
         {
-            // 1. التحقق الأولي (حجم، امتداد، ونوع محتوى)
-            if (file == null || string.IsNullOrEmpty(folderName) || file.Length == 0) return null;
-            if (file.Length > _maxFileSizeInBytes) return null;
-
-            var extension = Path.GetExtension(file.FileName).ToLowerInvariant();
-            if (!_allowedExtensions.Contains(extension) || !file.ContentType.StartsWith("image/"))
+            if (file == null || file.Length == 0 || string.IsNullOrEmpty(folderName))
                 return null;
 
-            // 2. تجهيز المسارات
-            var folderPath = Path.Combine(_webHost.WebRootPath, "images", folderName);
-            if (!Directory.Exists(folderPath)) Directory.CreateDirectory(folderPath);
+            if (file.Length > _maxFileSizeInBytes)
+                return null;
 
-            var fileName = $"{Guid.NewGuid()}{extension}"; // استخدام Interpolation أسرع
+            var extension = Path.GetExtension(file.FileName).ToLowerInvariant();
+            if (!_allowedExtensions.Contains(extension))
+                return null;
+
+            // تحديد مسار المجلد: wwwroot/images/members
+            var folderPath = Path.Combine(_webHost.WebRootPath, "images", folderName);
+            if (!Directory.Exists(folderPath))
+                Directory.CreateDirectory(folderPath);
+
+            var fileName = $"{Guid.NewGuid()}{extension}";
             var filePath = Path.Combine(folderPath, fileName);
 
-            // 3. النسخ (باستخدام using المختصرة)
             using var fileStream = new FileStream(filePath, FileMode.Create);
             await file.CopyToAsync(fileStream);
 
-            // 4. إرجاع المسار بـ Slash في البداية
-            return "/" + Path.Combine("images", folderName, fileName).Replace("\\", "/");
+            // نرجع المسار النسبي: images/members/guid.jpg
+            return Path.Combine("images", folderName, fileName).Replace("\\", "/");
         }
         catch (Exception)
         {
-            Console.WriteLine($"Failed to upload image to folder = {folderName}");
-            // يفضل هنا تعمل Log للايرور عشان تعرف لو فيه مشكلة في السيرفر
+            // يفضل عمل Logging هنا
             return null;
         }
     }
-    public Task<bool> DeleteAsync(string folderName, string fileName)
+
+    public async Task<bool> DeleteAsync(string folderName, string fileName)
     {
-        try {
-            if (file == null || string.IsNullOrEmpty(folderName) || file.Length == 0) return null;
+        try
+        {
+            if (string.IsNullOrEmpty(fileName)) return false;
+
+            // استخراج اسم الملف فقط لو كان المسار متخزن كامل
+            var pureFileName = Path.GetFileName(fileName);
+            var filePath = Path.Combine(_webHost.WebRootPath, "images", folderName, pureFileName);
+
+            if (File.Exists(filePath))
+            {
+                // مسح الملف من الهارد ديسك
+                File.Delete(filePath);
+                return true;
+            }
+            return false;
         }
         catch (Exception)
         {
-            Console.WriteLine($"Failed to delete image with name  = {fileName}");
-            // يفضل هنا تعمل Log للايرور عشان تعرف لو فيه مشكلة في السيرفر
             return false;
         }
     }
-
 }

@@ -1,4 +1,5 @@
 ﻿using GymManagementBusinessLayer.Services.Interfaces;
+using GymManagementBusinessLayer.Services.Interfaces.AttachmentService;
 using GymManagementBusinessLayer.ViewModels.MemberVM;
 using GymManagementDataAccessLayer.Entities;
 using GymManagementDataAccessLayer.Repositories.Classes;
@@ -8,7 +9,7 @@ using Microsoft.EntityFrameworkCore.ValueGeneration.Internal;
 
 namespace GymManagementPresentationLayer.Controllers;
 
-public class MemberController(IMemberService memberService) : Controller
+public class MemberController(IMemberService memberService, IAttachmentService attachmentService) : Controller
 {
     public async Task<IActionResult> Index()
     {
@@ -56,7 +57,8 @@ public class MemberController(IMemberService memberService) : Controller
     {
         var model = new CreateVM
         {
-            HealthRecord = new HealthRecordVM()
+            HealthRecord = new HealthRecordVM(),
+            PhotoFile = null!
         };
 
         return View(model);

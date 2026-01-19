@@ -1,89 +1,112 @@
 ﻿@model GymManagementBusinessLayer.ViewModels.MemberVM.UpdateVM
+
 <div class="container mt-5">
     <div class="row justify-content-center">
-        <div class="col-md-6">
+        <div class="col-md-8">
             <div class="card card-details border-0 p-2 shadow">
                 <div class="card-body text-center">
-                    <div class="text-center mt-3">
 
-                        @if (!string.IsNullOrEmpty(Model.Photo))
-                        {
-                            <img src="~/images/@Model.Photo" alt="@Model.Name" class="rounded-circle"
-                                 style="width: 120px; height: 120px; object-fit: cover; border: 3px solid #fff; margin-top: -60px;" />
-                        }
-                        else
-                        {
-                            <img src="~/images/User.jpg" alt="@Model.Name" class="rounded-circle"
-                                 style="width: 120px; height: 120px; object-fit: cover; border: 3px solid #fff; margin-top: -60px;" />
-                        }
-                        
-                    </div>
-                    <div class="card-body text-center">
-                        <h2 class="mb-1 text-primary-color">Name</h2>
-                        <form method="post" asp-controller="Member" asp-action="Update" enctype="multipart/form-data">
-                            <div class="mt-4 text-start">
-                                <div class="row g-3">
-                                    <div class="col-12">
-                                        <input hidden readonly asp-for="Id" />
-                                        <input hidden readonly asp-for="Photo" />
-                                        <input hidden readonly asp-for="Name" />
+                    <form method="post" asp-controller="Member" asp-action="Update" enctype="multipart/form-data">
+                        <input hidden asp-for="Id" />
+                        <input hidden asp-for="Photo" /> <input hidden asp-for="Name" />
 
-                                        <div class="p-3 bg-light rounded">
-                                            <small class="text-muted d-block mb-1">Email</small>
-                                            <input asp-for="Email" class="form-control" />
-                                            <span asp-validation-for="Email" class="text-danger"></span>
-                                        </div>
-                                    </div>
-                                    <div class="col-6">
-                                        <div class="p-3 bg-light rounded">
-                                            <small class="text-muted d-block mb-1">Phone</small>
-                                            <input asp-for="PhoneNumber" class="form-control" />
-                                            <span asp-validation-for="PhoneNumber" class="text-danger"></span>
-                                        </div>
-                                    </div>
+                        <div class="text-center mt-3 mb-4">
+                            <div class="position-relative d-inline-block">
+                                @if (!string.IsNullOrEmpty(Model.Photo))
+                                {
+                                    <img id="photoPreview" src="~/@Model.Photo" alt="@Model.Name" class="rounded-circle"
+                                         style="width: 130px; height: 130px; object-fit: cover; border: 4px solid #fff; box-shadow: 0 4px 10px rgba(0,0,0,0.1);" />
+                                }
+                                else
+                                {
+                                    <img id="photoPreview" src="~/images/User.jpg" alt="@Model.Name" class="rounded-circle"
+                                         style="width: 130px; height: 130px; object-fit: cover; border: 4px solid #fff; box-shadow: 0 4px 10px rgba(0,0,0,0.1);" />
+                                }
+                                <label for="photoInput" class="btn btn-sm btn-primary position-absolute bottom-0 end-0 rounded-circle">
+                                    <i class="bi bi-camera"></i>
+                                </label>
+                            </div>
+                            <h3 class="mt-2 text-primary-color">@Model.Name</h3>
+                            <p class="text-muted small">Update member's profile information</p>
+                        </div>
 
-                                    <div class="col-6">
-                                        <div class="p-3 bg-light rounded">
-                                            <small class="text-muted d-block mb-1">Building Number</small>
-                                            <input asp-for="BuildingNumber" class="form-control" />
-                                            <span asp-validation-for="BuildingNumber"
-                                                  class="text-danger"></span>
-                                        </div>
+                        <div class="text-start px-3">
+                            <div class="row g-3">
+                                <div class="col-12 mb-2">
+                                    <label class="form-label fw-bold small text-muted">Change Profile Photo</label>
+                                    <input asp-for="PhotoFile" type="file" class="form-control" accept="image/*" id="photoInput" />
+                                    <span asp-validation-for="PhotoFile" class="text-danger small"></span>
+                                </div>
+
+                                <div class="col-12">
+                                    <div class="p-2 bg-light rounded">
+                                        <label asp-for="Email" class="form-label small text-muted mb-1 ms-1">Email Address</label>
+                                        <input asp-for="Email" class="form-control" />
+                                        <span asp-validation-for="Email" class="text-danger small"></span>
                                     </div>
-                                    <div class="col-6">
-                                        <div class="p-3 bg-light rounded">
-                                            <small class="text-muted d-block mb-1">City</small>
-                                            <input asp-for="City" class="form-control" />
-                                            <span asp-validation-for="City" class="text-danger"></span>
-                                        </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class="p-2 bg-light rounded">
+                                        <label asp-for="PhoneNumber" class="form-label small text-muted mb-1 ms-1">Phone Number</label>
+                                        <input asp-for="PhoneNumber" class="form-control" />
+                                        <span asp-validation-for="PhoneNumber" class="text-danger small"></span>
                                     </div>
-                                    <div class="col-6">
-                                        <div class="p-3 bg-light rounded">
-                                            <small class="text-muted d-block mb-1">Street</small>
-                                            <input asp-for="Street" class="form-control" />
-                                            <span asp-validation-for="Street" class="text-danger"></span>
-                                        </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class="p-2 bg-light rounded">
+                                        <label asp-for="BuildingNumber" class="form-label small text-muted mb-1 ms-1">Building No.</label>
+                                        <input asp-for="BuildingNumber" class="form-control" />
+                                        <span asp-validation-for="BuildingNumber" class="text-danger small"></span>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class="p-2 bg-light rounded">
+                                        <label asp-for="City" class="form-label small text-muted mb-1 ms-1">City</label>
+                                        <input asp-for="City" class="form-control" />
+                                        <span asp-validation-for="City" class="text-danger small"></span>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class="p-2 bg-light rounded">
+                                        <label asp-for="Street" class="form-label small text-muted mb-1 ms-1">Street</label>
+                                        <input asp-for="Street" class="form-control" />
+                                        <span asp-validation-for="Street" class="text-danger small"></span>
                                     </div>
                                 </div>
                             </div>
+                        </div>
 
-
-                            <div class="d-flex justify-content-between gap-2 mt-3 px-3 pb-3">
-                                <a asp-controller="Member" asp-action="Index" class="btn btn-fill ">
-                                    Back to
-                                    List
-                                </a>
-                                <button type="submit" class="btn btn-fill ">Done</button>
-                            </div>
-                        </form>
-                    </div>
+                        <div class="d-flex justify-content-between gap-2 mt-4 px-3 pb-3">
+                            <a asp-controller="Member" asp-action="Index" class="btn btn-outline-secondary px-4">
+                                <i class="bi bi-arrow-left"></i> Back
+                            </a>
+                            <button type="submit" class="btn btn-primary px-5 fw-bold">Update Details</button>
+                        </div>
+                    </form>
                 </div>
-
             </div>
         </div>
     </div>
 </div>
 
-@section Scripts{
+@section Scripts {
     <partial name="_ValidationScriptsPartial" />
+    <script>
+        // كود معاينة الصورة عند اختيار ملف جديد
+        document.getElementById('photoInput').onchange = function (evt) {
+            const [file] = this.files;
+            if (file) {
+                const preview = document.getElementById('photoPreview');
+                // تنظيف الذاكرة
+                if (preview.src.startsWith('blob:')) {
+                    URL.revokeObjectURL(preview.src);
+                }
+                preview.src = URL.createObjectURL(file);
+            }
+        };
+    </script>
 }

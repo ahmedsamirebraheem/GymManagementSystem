@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
@@ -11,7 +12,7 @@ public class UpdateVM
     public string? Name { get; set; }  // Property Name is visible
 
     public string? Photo { get; set; }  // Property Photo is visible
-
+    public IFormFile? PhotoFile { get; set; }
     // Email Validation (Partially visible/standard)
     [Required(ErrorMessage = "Email Is Required!")]
     [EmailAddress(ErrorMessage = "Invalid Email Format!")] // Partially visible

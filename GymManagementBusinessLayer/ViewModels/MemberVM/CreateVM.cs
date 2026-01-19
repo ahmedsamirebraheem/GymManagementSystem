@@ -1,6 +1,8 @@
 ﻿using GymManagementDataAccessLayer.Entities.Enums;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
 
@@ -8,7 +10,10 @@ namespace GymManagementBusinessLayer.ViewModels.MemberVM;
 
 public class CreateVM
 {
-    public string?  Photo { get; set; }
+    [Required(ErrorMessage = "Photo Is Required!")]
+    [DisplayName("ProfilePhoto")]
+    public IFormFile PhotoFile { get; set; } = null!;
+
     [Required(ErrorMessage = "Name Is Required!")]
     [StringLength(maximumLength: 50, MinimumLength = 2, ErrorMessage = "Name Must Be Between 2 and 50 Chars!")]
     [RegularExpression(@"[a-zA-Z\s]*$", ErrorMessage = "Name Can Contain Only Letters And Spaces!")]
