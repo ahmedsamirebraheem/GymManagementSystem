@@ -95,7 +95,13 @@ header.home-section header p {
         width: 4px;
         border-radius: 10px;
     }
-
+.navbar .navbar-nav .nav-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 100px; /* بيخلي حجم الخلفية الزرقاء متساوي لكل اللينكات */
+    text-align: center;
+}
 @media screen and (max-width: 500px) {
     header.home-section header p {
         padding: 0;

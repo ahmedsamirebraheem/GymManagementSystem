@@ -1,46 +1,52 @@
-﻿<nav class="navbar navbar-expand-lg bg-white my-3">
+﻿<nav class="navbar navbar-expand-lg bg-white my-3 shadow-sm sticky-top">
     <div class="container">
         <a asp-controller="Home" asp-action="Index" class="navbar-brand">
-            <img src="~/images/logo.jpg" alt="" />
+            <img src="~/images/logo.jpg" alt="Logo" style="height: 50px;" />
         </a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
-                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+
+        <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav">
             <span class="navbar-toggler-icon"></span>
         </button>
 
-        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <div class="collapse navbar-collapse" id="mainNav">
             <ul class="navbar-nav m-auto mb-2 mb-lg-0 mt-3 mt-lg-0">
                 <li class="nav-item">
-                <li class="nav-item">
-                    <a asp-controller="Home" asp-action="Index" class=" nav-link px-3 py-2 mx-2 fw-bolder fs-5" aria-current="page">Home</a>
+                    <a asp-controller="Home" asp-action="Index"
+                       class="nav-link px-3 py-2 mx-1 fw-bold @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Home" ? "active" : "")">Home</a>
                 </li>
                 <li class="nav-item">
-                    <a asp-controller="Member" asp-action="Index" class="nav-link  px-3 py-2 mx-2 fw-bolder fs-5" aria-current="page">Members</a>
+                    <a asp-controller="Member" asp-action="Index"
+                       class="nav-link px-3 py-2 mx-1 fw-bold @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Member" ? "active" : "")">Members</a>
                 </li>
                 <li class="nav-item">
-                    <a asp-controller="Trainer" asp-action="Index" class="nav-link px-3 py-2 mx-2 fw-bolder fs-5" aria-current="page">Trainers</a>
+                    <a asp-controller="Trainer" asp-action="Index"
+                       class="nav-link px-3 py-2 mx-1 fw-bold @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Trainer" ? "active" : "")">Trainers</a>
                 </li>
                 <li class="nav-item">
-                    <a  asp-controller="Session" asp-action="Index" class="nav-link px-3 py-2 mx-2 fw-bolder fs-5" aria-current="page">Sessions</a>
+                    <a asp-controller="Session" asp-action="Index"
+                       class="nav-link px-3 py-2 mx-1 fw-bold @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Session" ? "active" : "")">Sessions</a>
                 </li>
                 <li class="nav-item">
-                    <a asp-controller="Plan" asp-action="Index" class="nav-link px-3 py-2 mx-2 fw-bolder fs-5" aria-current="page">Plans</a>
+                    <a asp-controller="Plan" asp-action="Index"
+                       class="nav-link px-3 py-2 mx-1 fw-bold @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Plan" ? "active" : "")">Plans</a>
                 </li>
                 <li class="nav-item">
-                    <a asp-controller="Membership" asp-action="Index" class="nav-link px-3 py-2 mx-2 fw-bolder fs-5" aria-current="page">Memberships</a>
+                    <a asp-controller="Membership" asp-action="Index"
+                       class="nav-link px-3 py-2 mx-1 fw-bold @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Membership" ? "active" : "")">Memberships</a>
                 </li>
                 <li class="nav-item">
-                    <a asp-controller="MemberSession" asp-action="Index" class="nav-link px-3 py-2 mx-2 fw-bolder fs-5" aria-current="page">Sessions Schedule</a>
-                </li>
-                <li class="nav-item">
-                    <form asp-action="Logout" asp-controller="Account" method="post" class="d-inline">
-                        <button type="submit"
-                                class="btn btn-link nav-link px-3 py-2 mx-2 fw-bolder fs-5 text-black-alternative">
-                            Logout
-                        </button>
-                    </form>
+                    <a asp-controller="MemberSession" asp-action="Index"
+                       class="nav-link px-3 py-2 mx-1 fw-bold @(ViewContext.RouteData.Values["Controller"]?.ToString() == "MemberSession" ? "active" : "")">Schedule</a>
                 </li>
             </ul>
+
+            <div class="d-flex align-items-center">
+                <form asp-action="Logout" asp-controller="Account" method="post">
+                    <button type="submit" class="btn btn-outline btn-sm btn-pill fw-bold">
+                        <i class="bi bi-box-arrow-right me-1"></i> Logout
+                    </button>
+                </form>
+            </div>
         </div>
     </div>
 </nav>
