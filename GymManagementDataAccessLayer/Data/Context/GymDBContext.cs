@@ -1,4 +1,5 @@
 ﻿using GymManagementDataAccessLayer.Entities;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -7,7 +8,7 @@ using System.Text;
 
 namespace GymManagementDataAccessLayer.Data.Context;
 
-public class GymDBContext : DbContext
+public class GymDBContext : IdentityDbContext<ApplicationUser>
 {
     public GymDBContext(DbContextOptions<GymDBContext> options) : base(options)
     {
@@ -15,9 +16,14 @@ public class GymDBContext : DbContext
     }
     protected override  void OnModelCreating(ModelBuilder modelBuilder)
     {
+        base.OnModelCreating(modelBuilder);
         modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
-        
-       
+
+        modelBuilder.Entity<ApplicationUser>(E =>
+        {
+            E.Property(x => x.FirstName).HasColumnType("varchar").HasMaxLength(50);
+            E.Property(x => x.LastName).HasColumnType("varchar").HasMaxLength(50);
+        });
 
         
 
