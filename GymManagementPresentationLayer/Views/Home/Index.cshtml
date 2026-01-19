@@ -1,4 +1,7 @@
 ﻿@model AnalyticsVM
+@{
+    ViewData["Title"] = "Home";
+}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -15,7 +18,7 @@
     <link rel="stylesheet" href="~/css/bootstrap.min.css" />
     <!-- ^ Our main css file -->
     <link rel="stylesheet" href="~/css/style.css" />
-    <title>Power fitness | Home</title>
+    <title>@ViewData["Title"] - Power Fitness</title>
 </head>
 
 <body>

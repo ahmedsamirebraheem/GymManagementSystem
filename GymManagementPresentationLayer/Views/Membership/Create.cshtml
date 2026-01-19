@@ -1,5 +1,7 @@
-﻿
-@model GymManagementBusinessLayer.ViewModels.MembershipVM.CreateVM
+﻿@model GymManagementBusinessLayer.ViewModels.MembershipVM.CreateVM
+@{
+    ViewData["Title"] = "Create Membership";
+}
 @if (TempData["ErrorMessage"] is not null)
 {
     <div id="Alert" class="alert alert-danger alert-dismissible fade show">

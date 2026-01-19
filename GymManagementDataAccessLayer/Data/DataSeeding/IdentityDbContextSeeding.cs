@@ -3,105 +3,75 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
-using System.Text;
+using System.Threading.Tasks;
 
-namespace GymManagementDataAccessLayer.Data.DataSeeding;
-
-public class IdentityDbContextSeeding
+namespace GymManagementDataAccessLayer.Data.DataSeeding
 {
-    public async static Task<bool> SeedData(RoleManager<IdentityRole> roleManager, UserManager<ApplicationUser> userManager)
+    public class IdentityDbContextSeeding
     {
-        try
+        public async static Task<bool> SeedData(RoleManager<IdentityRole> roleManager, UserManager<ApplicationUser> userManager)
         {
-            var HasRole = await roleManager.Roles.AnyAsync();
-            if (!HasRole)
+            try
             {
-                var Roles = new List<IdentityRole>
+                // 1. Seed Roles
+                var roles = new[] { "SuperAdmin", "Admin" };
+                foreach (var roleName in roles)
                 {
-                    new(){Name = "SuperAdmin"},
-                    new(){Name = "Admin"}
-                };
-                foreach (var role in Roles)
-                {
-                    if (!await roleManager.RoleExistsAsync(role.Name!))
+                    if (!await roleManager.RoleExistsAsync(roleName))
                     {
-                        roleManager.CreateAsync(role).Wait();
+                        await roleManager.CreateAsync(new IdentityRole(roleName));
                     }
                 }
-            }
 
-            // Check and create/update MainAdmin
-            var mainAdmin = await userManager.FindByEmailAsync("AhmedSuperAdmin@gmail.com");
-            if (mainAdmin == null)
-            {
-                mainAdmin = new ApplicationUser()
-                {
-                    FirstName = "Ahmed",
-                    LastName = "Samir",
-                    UserName = "AhmedSamir",
-                    Email = "AhmedSuperAdmin@gmail.com",
-                    PhoneNumber = "01000349539",
-                    EmailConfirmed = true
-                };
+                // 2. Seed SuperAdmin (Ahmed)
+                await CreateOrUpdateUser(userManager, "AhmedSuperAdmin@gmail.com", "Ahmed", "Samir", "AhmedSamir", "01000349539", "SuperAdmin");
 
-                await userManager.CreateAsync(mainAdmin, "P@ssw0rd");
-                await userManager.AddToRoleAsync(mainAdmin, "SuperAdmin");
-            }
-            else
-            {
-                // Ensure email is confirmed and user has correct role
-                if (!mainAdmin.EmailConfirmed)
-                {
-                    mainAdmin.EmailConfirmed = true;
-                    await userManager.UpdateAsync(mainAdmin);
-                }
-                if (!await userManager.IsInRoleAsync(mainAdmin, "SuperAdmin"))
-                {
-                    await userManager.AddToRoleAsync(mainAdmin, "SuperAdmin");
-                }
-            }
+                // 3. Seed Admin (Karim)
+                await CreateOrUpdateUser(userManager, "KarimAdmin@gmail.com", "Karim", "Samir", "KarimSamir", "01288849606", "Admin");
 
-            // Check and create/update Admin
-            var admin = await userManager.FindByEmailAsync("KarimAdmin@gmail.com");
-            if (admin == null)
-            {
-                admin = new ApplicationUser()
-                {
-                    FirstName = "Karim",
-                    LastName = "Samir",
-                    UserName = "KarimSamir",
-                    Email = "KarimAdmin@gmail.com",
-                    PhoneNumber = "01288849606",
-                    EmailConfirmed = true
-                };
-
-                await userManager.CreateAsync(admin, "P@ssw0rd");
-                await userManager.AddToRoleAsync(admin, "Admin");
+                return true;
             }
-            else
+            catch (Exception e)
             {
-                // Ensure email is confirmed and user has correct role
-                if (!admin.EmailConfirmed)
-                {
-                    admin.EmailConfirmed = true;
-                    await userManager.UpdateAsync(admin);
-                }
-                if (!await userManager.IsInRoleAsync(admin, "Admin"))
-                {
-                    await userManager.AddToRoleAsync(admin, "Admin");
-                }
-                // Reset password to ensure it's correct
-                var token = await userManager.GeneratePasswordResetTokenAsync(admin);
-                await userManager.ResetPasswordAsync(admin, token, "P@ssw0rd");
-            }
-
-            return true;
-        }
-        catch (Exception e)
-        {
-            {
-                Console.WriteLine($"Seed Failed! {e}");
+                Console.WriteLine($"Seed Failed! {e.Message}");
                 return false;
+            }
+        }
+
+        // الميثود دي لازم تكون جوه الكلاس وبرا الميثود اللي فوق
+        private async static Task CreateOrUpdateUser(UserManager<ApplicationUser> userManager, string email, string fName, string lName, string uName, string phone, string role)
+        {
+            var user = await userManager.FindByEmailAsync(email);
+            if (user == null)
+            {
+                user = new ApplicationUser
+                {
+                    FirstName = fName,
+                    LastName = lName,
+                    UserName = uName,
+                    Email = email,
+                    PhoneNumber = phone,
+                    EmailConfirmed = true
+                };
+                var result = await userManager.CreateAsync(user, "P@ssw0rd");
+                if (result.Succeeded)
+                {
+                    await userManager.AddToRoleAsync(user, role);
+                }
+            }
+            else
+            {
+                // تحديث بسيط بدون تغيير الباسورد عشان الـ Login ميفشلش
+                if (!user.EmailConfirmed)
+                {
+                    user.EmailConfirmed = true;
+                    await userManager.UpdateAsync(user);
+                }
+
+                if (!await userManager.IsInRoleAsync(user, role))
+                {
+                    await userManager.AddToRoleAsync(user, role);
+                }
             }
         }
     }

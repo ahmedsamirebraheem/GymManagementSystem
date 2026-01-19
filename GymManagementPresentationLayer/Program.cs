@@ -39,7 +39,7 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>(confg =>
 builder.Services.ConfigureApplicationCookie(option =>
 {
     option.LoginPath = "/Account/Login";
-    option.AccessDeniedPath = "/Account/AccessDined";
+    option.AccessDeniedPath = "/Account/AccessDenied";
 });
 
 builder.Services.AddMapster();
