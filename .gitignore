@@ -5,3 +5,6 @@ obj/
 *.suo
 *.dll
 *.exe
+
+# Large image files
+**/why us images.svg
