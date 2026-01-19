@@ -4,11 +4,13 @@ using GymManagementBusinessLayer.ViewModels.MemberVM;
 using GymManagementDataAccessLayer.Entities;
 using GymManagementDataAccessLayer.Repositories.Classes;
 using GymManagementDataAccessLayer.Repositories.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.ValueGeneration.Internal;
 
 namespace GymManagementPresentationLayer.Controllers;
 
+[Authorize(Roles = "SuperAdmin")]
 public class MemberController(IMemberService memberService, IAttachmentService attachmentService) : Controller
 {
     public async Task<IActionResult> Index()
