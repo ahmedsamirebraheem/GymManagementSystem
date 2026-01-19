@@ -57,8 +57,8 @@ public class IdentityDbContextSeeding
                     PhoneNumber = "01288849606"
                 };
 
-                await userManager.CreateAsync(MainAdmin, "P@ssw0rd");
-                await userManager.AddToRoleAsync(MainAdmin, "Admin");
+                await userManager.CreateAsync(Admin, "P@ssw0rd");
+                await userManager.AddToRoleAsync(Admin, "Admin");
             }
             return true;
         }
