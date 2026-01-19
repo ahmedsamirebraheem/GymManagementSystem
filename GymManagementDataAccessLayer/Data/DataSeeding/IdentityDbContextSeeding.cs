@@ -13,12 +13,7 @@ public class IdentityDbContextSeeding
     {
         try
         {
-            var HasUser = await userManager.Users.AnyAsync();
             var HasRole = await roleManager.Roles.AnyAsync();
-            if (HasRole && HasUser)
-            {
-                return false;
-            }
             if (!HasRole)
             {
                 var Roles = new List<IdentityRole>
@@ -34,32 +29,72 @@ public class IdentityDbContextSeeding
                     }
                 }
             }
-            if (!HasUser)
+
+            // Check and create/update MainAdmin
+            var mainAdmin = await userManager.FindByEmailAsync("AhmedSuperAdmin@gmail.com");
+            if (mainAdmin == null)
             {
-                var MainAdmin = new ApplicationUser()
+                mainAdmin = new ApplicationUser()
                 {
                     FirstName = "Ahmed",
                     LastName = "Samir",
                     UserName = "AhmedSamir",
                     Email = "AhmedSuperAdmin@gmail.com",
-                    PhoneNumber = "01000349539"
+                    PhoneNumber = "01000349539",
+                    EmailConfirmed = true
                 };
 
-                await userManager.CreateAsync(MainAdmin, "P@ssw0rd");
-                await userManager.AddToRoleAsync(MainAdmin, "SuperAdmin");
+                await userManager.CreateAsync(mainAdmin, "P@ssw0rd");
+                await userManager.AddToRoleAsync(mainAdmin, "SuperAdmin");
+            }
+            else
+            {
+                // Ensure email is confirmed and user has correct role
+                if (!mainAdmin.EmailConfirmed)
+                {
+                    mainAdmin.EmailConfirmed = true;
+                    await userManager.UpdateAsync(mainAdmin);
+                }
+                if (!await userManager.IsInRoleAsync(mainAdmin, "SuperAdmin"))
+                {
+                    await userManager.AddToRoleAsync(mainAdmin, "SuperAdmin");
+                }
+            }
 
-                var Admin = new ApplicationUser()
+            // Check and create/update Admin
+            var admin = await userManager.FindByEmailAsync("KarimAdmin@gmail.com");
+            if (admin == null)
+            {
+                admin = new ApplicationUser()
                 {
                     FirstName = "Karim",
                     LastName = "Samir",
                     UserName = "KarimSamir",
                     Email = "KarimAdmin@gmail.com",
-                    PhoneNumber = "01288849606"
+                    PhoneNumber = "01288849606",
+                    EmailConfirmed = true
                 };
 
-                await userManager.CreateAsync(Admin, "P@ssw0rd");
-                await userManager.AddToRoleAsync(Admin, "Admin");
+                await userManager.CreateAsync(admin, "P@ssw0rd");
+                await userManager.AddToRoleAsync(admin, "Admin");
             }
+            else
+            {
+                // Ensure email is confirmed and user has correct role
+                if (!admin.EmailConfirmed)
+                {
+                    admin.EmailConfirmed = true;
+                    await userManager.UpdateAsync(admin);
+                }
+                if (!await userManager.IsInRoleAsync(admin, "Admin"))
+                {
+                    await userManager.AddToRoleAsync(admin, "Admin");
+                }
+                // Reset password to ensure it's correct
+                var token = await userManager.GeneratePasswordResetTokenAsync(admin);
+                await userManager.ResetPasswordAsync(admin, token, "P@ssw0rd");
+            }
+
             return true;
         }
         catch (Exception e)
